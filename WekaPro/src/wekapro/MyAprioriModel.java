@@ -17,6 +17,7 @@ public class MyAprioriModel extends MyKnowledgeModel{
     Instances newData;
 
     public MyAprioriModel() {
+        
     }
 
     public MyAprioriModel(String filename, String m_opts, String d_opts) throws Exception {
