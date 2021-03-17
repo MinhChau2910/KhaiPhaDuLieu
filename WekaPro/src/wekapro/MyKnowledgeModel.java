@@ -25,55 +25,55 @@ import weka.filters.unsupervised.instance.Resample;
 class MyKnowledgeModel {
     DataSource source;
     Instances dataset;
-    String [] model_options;
+    
+    
+  String [] model_options;
     String [] data_options;
     Instances trainset;//bai5
     Instances testset;//bai5
-
+    
     public MyKnowledgeModel() {
     }
-    
-    
-
-    public MyKnowledgeModel(String filename,
+     
+     
+   public MyKnowledgeModel(String filename,
             String m_opts , 
             String d_opts ) throws Exception {
         this.source = new DataSource(filename);
         this.dataset = source.getDataSet();
-        
         if (m_opts != null){
             this.model_options = weka.core.Utils.splitOptions(m_opts);
         }
         if(d_opts != null){
             this.model_options = weka.core.Utils.splitOptions(d_opts);
         }
-        
-    }
-    
-    public  Instances removeData(Instances originalDate) throws Exception{
+   }
+  
+  
+  public  Instances removeData(Instances originalDate) throws Exception{
         Remove remove = new Remove();
         remove.setOptions(data_options);
         remove.setInputFormat(originalDate);
         return  Filter.useFilter(originalDate, remove);
     }
     
-    public  Instances convertData(Instances originalData) throws Exception{
+     public  Instances convertData(Instances originalData) throws Exception{
         NumericToNominal n2n = new NumericToNominal();
         n2n.setOptions(data_options);
         n2n.setInputFormat(originalData);
-        return  Filter.useFilter( originalData, n2n);
-        
+        return  Filter.useFilter( originalData, n2n);        
     }
-    public  Instances convert2Binary(Instances originalData) throws Exception{
+     
+     public  Instances convert2Binary(Instances originalData) throws Exception{
         NominalToBinary n2b = new NominalToBinary();
         n2b.setOptions(data_options);
         n2b.setBinaryAttributesNominal(true);
         n2b.setInputFormat(originalData);
         return Filter.useFilter(originalData, n2b);
     }
-    
-    
-    public void saveData (String filename) throws IOException{
+
+  
+  public void saveData (String filename) throws IOException{
         ArffSaver outData = new ArffSaver();
         outData.setInstances(this.dataset);
         outData.setFile(new File(filename));
@@ -88,7 +88,7 @@ class MyKnowledgeModel {
         outData.writeBatch();
         System.out.println("Converted");
     }
-    //bai05
+    
     public Instances divideTrainTest (Instances originalSet, 
             double percent, boolean isTest) throws Exception{
         RemovePercentage rp = new RemovePercentage();
@@ -108,11 +108,16 @@ class MyKnowledgeModel {
         return  Filter.useFilter(originalSet, rs);
     }
     
-    @Override
+     public  void saveModel(String filename, Object model) throws Exception{
+         weka.core.SerializationHelper.write(filename, model);
+    }
+
+     public  Object  loadModel(String filename) throws Exception{
+        return weka.core.SerializationHelper.read(filename);
+    }
+  
+  @Override
     public String toString() {
         return dataset.toSummaryString();
     }
-
-
-    
 }
